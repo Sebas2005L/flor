@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Amor, Leidy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
+
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Nuevo fondo azul cielo, radiante y calmado */
+            background: linear-gradient(to bottom, #87CEEB, #B0E0E6);
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            /* Color de texto oscuro para contraste con el fondo claro */
+            color: #2c3e50;
+            font-size: 3em;
+            /* Sombra sutil para darle profundidad al texto */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .black-heart {
+            font-family: sans-serif;
+            color: #000;
+            text-shadow: none; /* Quitamos la sombra que no es necesaria */
+            animation: beat 2s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        .sunflower {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            transition: transform 0.5s ease-out;
+        }
+
+        .head {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #4a2e00 0%, #3d2600 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
+            z-index: 2;
+        }
+
+        .seed {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #c2b280;
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+
+        .petals {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 1;
+        }
+
+        .petal {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 180px solid #f1c40f;
+            border-radius: 50px;
+            top: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+        }
+        
+        .p1 { transform: translate(-50%, -100%) rotate(0deg); }
+        .p2 { transform: translate(-50%, -100%) rotate(30deg); }
+        .p3 { transform: translate(-50%, -100%) rotate(60deg); }
+        .p4 { transform: translate(-50%, -100%) rotate(90deg); }
+        .p5 { transform: translate(-50%, -100%) rotate(120deg); }
+        .p6 { transform: translate(-50%, -100%) rotate(150deg); }
+        .p7 { transform: translate(-50%, -100%) rotate(180deg); }
+        .p8 { transform: translate(-50%, -100%) rotate(210deg); }
+        .p9 { transform: translate(-50%, -100%) rotate(240deg); }
+        .p10 { transform: translate(-50%, -100%) rotate(270deg); }
+        .p11 { transform: translate(-50%, -100%) rotate(300deg); }
+        .p12 { transform: translate(-50%, -100%) rotate(330deg); }
+
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: gold;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes sparkle-animation {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Te quiero mucho mi Leidy <span class="black-heart">🖤</span></h1>
+        
+        <div class="sunflower" id="sunflower">
+            <div class="petals" id="petals">
+                <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div>
+                <div class="petal p4"></div><div class="petal p5"></div><div class="petal p6"></div>
+                <div class="petal p7"></div><div class="petal p8"></div><div class="petal p9"></div>
+                <div class="petal p10"></div><div class="petal p11"></div><div class="petal p12"></div>
+            </div>
+            <div class="head" id="sunflower-head"></div>
+        </div>
+    </div>
+
+    <audio id="background-music" loop>
+        <source src="quedate.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <script>
+        const sunflower = document.getElementById('sunflower');
+        const head = document.getElementById('sunflower-head');
+        const petals = document.getElementById('petals');
+        const audio = document.getElementById('background-music');
+        let isMusicPlaying = false;
+
+        // --- Generar textura de semillas ---
+        const centerX = head.offsetWidth / 2;
+        const centerY = head.offsetHeight / 2;
+        const numSeeds = 200;
+        const angleStep = 137.5;
+        for (let i = 0; i < numSeeds; i++) {
+            const angle = i * angleStep;
+            const radius = 2 * Math.sqrt(i);
+            const x = centerX + radius * Math.cos(angle * Math.PI / 180);
+            const y = centerY + radius * Math.sin(angle * Math.PI / 180);
+            
+            if (radius < centerX - 5) {
+                const seed = document.createElement('div');
+                seed.className = 'seed';
+                seed.style.left = `${x}px`;
+                seed.style.top = `${y}px`;
+                head.appendChild(seed);
+            }
+        }
+
+        // --- Interacción con el ratón ---
+        document.body.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const { innerWidth, innerHeight } = window;
+            const rotateX = (clientY / innerHeight - 0.5) * -30;
+            const rotateY = (clientX / innerWidth - 0.5) * 30;
+            sunflower.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        // --- Interacción al hacer clic ---
+        sunflower.addEventListener('click', () => {
+            if (!isMusicPlaying) {
+                audio.play();
+                isMusicPlaying = true;
+            }
+            
+            petals.style.transform = 'scale(1.1)';
+            setTimeout(() => { petals.style.transform = 'scale(1)'; }, 500);
+
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sunflower.appendChild(sparkle);
+                
+                const angle = Math.random() * 360;
+                const distance = Math.random() * 150 + 50;
+                
+                sparkle.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+                sparkle.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+
+                sparkle.style.animation = `sparkle-animation 1s ease-out forwards`;
+                setTimeout(() => { sparkle.remove(); }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
